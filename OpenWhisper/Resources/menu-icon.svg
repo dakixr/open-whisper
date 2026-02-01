@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Simple microphone glyph designed for 16–20pt menu bar sizes -->
+  <path d="M11 3 L13 3 C15.209 3 17 4.791 17 7 L17 9 C17 11.209 15.209 13 13 13 L11 13 C8.791 13 7 11.209 7 9 L7 7 C7 4.791 8.791 3 11 3 Z"/>
+  <path d="M11 13 L13 13 L13 17 L11 17 Z"/>
+  <path d="M9 17 L15 17 L15 19 L9 19 Z"/>
+</svg>
+
