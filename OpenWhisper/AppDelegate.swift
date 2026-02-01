@@ -1,4 +1,5 @@
 import AppKit
+import Foundation
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
 	private let overlayController = OverlayController()
@@ -48,30 +49,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 				await MainActor.run {
 					self.overlayController.show(state: .error(error.localizedDescription))
 				}
-				case .success(let audioURL):
-					await MainActor.run {
-						self.overlayController.show(state: .transcribing)
+			case .success(let audioURL):
+				await MainActor.run {
+					self.overlayController.show(state: .transcribing)
+				}
+
+				let durationSeconds = AudioDuration.seconds(for: audioURL)
+				let textResult = await self.transcriber.transcribe(fileURL: audioURL)
+				switch textResult {
+				case .failure(let error):
+					if !isMissingKey(error) {
+						UsageStore.shared.recordTranscription(durationSeconds: durationSeconds, succeeded: false)
 					}
-					let textResult = await self.transcriber.transcribe(fileURL: audioURL)
-					switch textResult {
-					case .failure(let error):
-						await MainActor.run {
-							self.overlayController.show(state: .error(error.localizedDescription))
-						}
-					case .success(let text):
-						let insertResult = self.inserter.insertTextPreferDirect(text)
-						await MainActor.run {
-							switch insertResult {
-							case .typed:
-								self.overlayController.show(state: .done(.typed))
-							case .pasted:
-								self.overlayController.show(state: .done(.pasted))
-							case .copiedOnly:
-								self.overlayController.show(state: .copiedOnly)
-							}
+					await MainActor.run {
+						self.overlayController.show(state: .error(error.localizedDescription))
+					}
+				case .success(let text):
+					UsageStore.shared.recordTranscription(durationSeconds: durationSeconds, succeeded: true)
+					let insertResult = self.inserter.insertTextPreferDirect(text)
+					await MainActor.run {
+						switch insertResult {
+						case .typed:
+							self.overlayController.show(state: .done(.typed))
+						case .pasted:
+							self.overlayController.show(state: .done(.pasted))
+						case .copiedOnly:
+							self.overlayController.show(state: .copiedOnly)
 						}
 					}
 				}
 			}
 		}
 	}
+
+	private func isMissingKey(_ error: Error) -> Bool {
+		if let e = error as? OpenAIWhisperTranscriber.TranscribeError, e == .missingAPIKey {
+			return true
+		}
+		return false
+	}
+}

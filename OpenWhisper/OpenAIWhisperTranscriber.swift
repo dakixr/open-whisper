@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 final class OpenAIWhisperTranscriber {
-	enum TranscribeError: Error, LocalizedError {
+	enum TranscribeError: Error, LocalizedError, Equatable {
 		case missingAPIKey
 		case invalidResponse
 		case serverError(String)

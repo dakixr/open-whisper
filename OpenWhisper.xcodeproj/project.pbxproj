@@ -19,6 +19,10 @@
 			001A0D332B6A000100000001 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D282B6A000100000001 /* WaveformView.swift */; };
 			001A0D342B6A000100000001 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D292B6A000100000001 /* Permissions.swift */; };
 			001A0D352B6A000100000001 /* CodeSigningInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2A2B6A000100000002 /* CodeSigningInfo.swift */; };
+			001A0D362B6A000100000001 /* UsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2B2B6A000100000002 /* UsageStore.swift */; };
+			001A0D372B6A000100000001 /* UsageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2C2B6A000100000002 /* UsageFormat.swift */; };
+			001A0D382B6A000100000001 /* AudioDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2D2B6A000100000002 /* AudioDuration.swift */; };
+			001A0D392B6A000100000001 /* LoginItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2E2B6A000100000002 /* LoginItemManager.swift */; };
 	/* End PBXBuildFile section */
 
 	/* Begin PBXFileReference section */
@@ -36,6 +40,10 @@
 			001A0D282B6A000100000001 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 			001A0D292B6A000100000001 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
 			001A0D2A2B6A000100000002 /* CodeSigningInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeSigningInfo.swift; sourceTree = "<group>"; };
+			001A0D2B2B6A000100000002 /* UsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStore.swift; sourceTree = "<group>"; };
+			001A0D2C2B6A000100000002 /* UsageFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageFormat.swift; sourceTree = "<group>"; };
+			001A0D2D2B6A000100000002 /* AudioDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDuration.swift; sourceTree = "<group>"; };
+			001A0D2E2B6A000100000002 /* LoginItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginItemManager.swift; sourceTree = "<group>"; };
 	/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +87,10 @@
 					001A0D282B6A000100000001 /* WaveformView.swift */,
 					001A0D292B6A000100000001 /* Permissions.swift */,
 					001A0D2A2B6A000100000002 /* CodeSigningInfo.swift */,
+					001A0D2B2B6A000100000002 /* UsageStore.swift */,
+					001A0D2C2B6A000100000002 /* UsageFormat.swift */,
+					001A0D2D2B6A000100000002 /* AudioDuration.swift */,
+					001A0D2E2B6A000100000002 /* LoginItemManager.swift */,
 					001A0D272B6A000100000001 /* Resources/menu-icon.svg */,
 					001A0D1E2B6A000100000001 /* Info.plist */,
 				);
@@ -165,6 +177,10 @@
 					001A0D332B6A000100000001 /* WaveformView.swift in Sources */,
 					001A0D342B6A000100000001 /* Permissions.swift in Sources */,
 					001A0D352B6A000100000001 /* CodeSigningInfo.swift in Sources */,
+					001A0D362B6A000100000001 /* UsageStore.swift in Sources */,
+					001A0D372B6A000100000001 /* UsageFormat.swift in Sources */,
+					001A0D382B6A000100000001 /* AudioDuration.swift in Sources */,
+					001A0D392B6A000100000001 /* LoginItemManager.swift in Sources */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};

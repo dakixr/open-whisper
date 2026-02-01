@@ -3,10 +3,26 @@ import SwiftUI
 @main
 struct OpenWhisperApp: App {
 	@NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+	@State private var usage = UsageStore.shared
+	@State private var loginItem = LoginItemManager.shared
 
 	var body: some Scene {
 		MenuBarExtra {
+			Toggle("Launch at Login", isOn: $loginItem.isEnabled)
+			Divider()
 			SettingsLink()
+			Divider()
+
+			let today = usage.totalsToday
+			let all = usage.totalsAllTime
+			Text("Today: \(UsageFormat.minutesString(seconds: today.seconds)) • \(UsageFormat.currencyUSD(usage.estimatedCostUSD(for: today)))")
+			Text("All time: \(UsageFormat.minutesString(seconds: all.seconds)) • \(UsageFormat.currencyUSD(usage.estimatedCostUSD(for: all)))")
+			Text("Rate: \(UsageFormat.currencyUSD(UsagePricing.whisperUSDPerMinute, maxFractionDigits: 3))/min (estimated)")
+				.foregroundStyle(.secondary)
+
+			Button("Reset Usage") {
+				usage.resetAll()
+			}
 			Divider()
 			Button("Quit") { NSApp.terminate(nil) }
 				.keyboardShortcut("q")
@@ -34,6 +50,7 @@ private struct MenuBarIcon: View {
 private struct SettingsView: View {
 	@State private var apiKey: String = ""
 	@State private var status: String?
+	@State private var loginItem = LoginItemManager.shared
 
 	private var envKeyPresent: Bool {
 		let env = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? ""
@@ -85,6 +102,9 @@ private struct SettingsView: View {
 				.foregroundStyle(.secondary)
 			Text("Requires permissions: Microphone, Input Monitoring, Accessibility.")
 				.foregroundStyle(.secondary)
+
+			Toggle("Launch at Login", isOn: $loginItem.isEnabled)
+				.toggleStyle(.switch)
 
 			Divider().padding(.vertical, 6)
 

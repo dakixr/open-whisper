@@ -1,0 +1,20 @@
+.DS_Store
+
+# Xcode / SwiftPM
+DerivedData/
+*.xcuserstate
+*.xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Build outputs
+build/
+dist/
+
+# Temporary
+*.swp
+*.tmp
+*.log
+
