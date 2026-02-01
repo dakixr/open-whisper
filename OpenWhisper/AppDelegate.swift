@@ -33,6 +33,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 				self?.overlayController.update(level: level)
 			}
 		}
+		recorder.onStartError = { [weak self] error in
+			Task { @MainActor in
+				self?.overlayController.show(state: .error(error.localizedDescription))
+			}
+		}
 
 		Task { @MainActor in
 			overlayController.show(state: .recording)
@@ -43,6 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 	private func stopHold() {
 		Task {
 			recorder.onLevelUpdate = nil
+			recorder.onStartError = nil
 			let result = await recorder.stop()
 			switch result {
 			case .failure(let error):

@@ -23,19 +23,32 @@ final class HoldToTalkRecorder {
 	private var meterTimer: DispatchSourceTimer?
 
 	var onLevelUpdate: ((Float) -> Void)?
+	var onStartError: ((Error) -> Void)?
 
 	func start() {
 		Task {
 			let granted = await requestMicrophoneAccessIfNeeded()
-			guard granted else { return }
+			guard granted else {
+				await MainActor.run {
+					self.onStartError?(RecorderError.microphoneDenied)
+				}
+				return
+			}
 			do { try startRecording() } catch {
+				await MainActor.run {
+					self.onStartError?(error)
+				}
 				NSLog("OpenWhisper: \(error.localizedDescription)")
 			}
 		}
 	}
 
 	func stop() async -> Result<URL, Error> {
-		guard let recorder else { return .failure(RecorderError.recorderStopFailed) }
+		guard let recorder else {
+			let status = AVCaptureDevice.authorizationStatus(for: .audio)
+			if status != .authorized { return .failure(RecorderError.microphoneDenied) }
+			return .failure(RecorderError.recorderStopFailed)
+		}
 
 		let url = fileURL
 		stopMetering()

@@ -51,6 +51,7 @@ private struct SettingsView: View {
 	@State private var apiKey: String = ""
 	@State private var status: String?
 	@State private var loginItem = LoginItemManager.shared
+	@State private var permissionStatusMessage: String?
 
 	private var envKeyPresent: Bool {
 		let env = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? ""
@@ -156,7 +157,7 @@ private struct SettingsView: View {
 			Text("Permissions")
 				.font(.headline)
 
-			VStack(alignment: .leading, spacing: 8) {
+				VStack(alignment: .leading, spacing: 8) {
 				if signingInfo.isAdHoc {
 					HStack(alignment: .top, spacing: 10) {
 						Image(systemName: "exclamationmark.triangle.fill")
@@ -180,31 +181,63 @@ private struct SettingsView: View {
 					}
 				}
 
-				HStack {
-					Image(systemName: microphoneStatus == "Allowed" ? "checkmark.circle.fill" : "mic.slash.fill")
-						.foregroundStyle(microphoneStatus == "Allowed" ? .green : .secondary)
-					Text("Microphone: \(microphoneStatus)")
-						.font(.system(size: 13, weight: .semibold))
-					Spacer()
-				}
-				HStack {
-					Image(systemName: accessibilityTrusted ? "checkmark.circle.fill" : "hand.raised.slash.fill")
-						.foregroundStyle(accessibilityTrusted ? .green : .secondary)
+					HStack {
+						Image(systemName: microphoneStatus == "Allowed" ? "checkmark.circle.fill" : "mic.slash.fill")
+							.foregroundStyle(microphoneStatus == "Allowed" ? .green : .secondary)
+						Text("Microphone: \(microphoneStatus)")
+							.font(.system(size: 13, weight: .semibold))
+						Spacer()
+						if microphoneStatus != "Allowed" {
+							Button(microphoneStatus == "Not requested" ? "Request…" : "Open…") {
+								Task {
+									if MicrophonePermissions.status == .notDetermined {
+										let granted = await MicrophonePermissions.requestIfNeeded()
+										await MainActor.run {
+											permissionStatusMessage = granted ? "Microphone permission granted." : "Microphone permission denied."
+										}
+									} else {
+										PrivacySettings.openMicrophone()
+									}
+								}
+							}
+						} else {
+							Button("Open…") { PrivacySettings.openMicrophone() }
+								.foregroundStyle(.secondary)
+						}
+					}
+					HStack {
+						Image(systemName: accessibilityTrusted ? "checkmark.circle.fill" : "hand.raised.slash.fill")
+							.foregroundStyle(accessibilityTrusted ? .green : .secondary)
 					Text("Accessibility: \(accessibilityTrusted ? "Allowed" : "Not allowed")")
 						.font(.system(size: 13, weight: .semibold))
 					Spacer()
-					if !accessibilityTrusted {
-						Button("Request…") {
-							_ = AccessibilityPermissions.isTrusted(prompt: true)
+						if !accessibilityTrusted {
+							Button("Request…") {
+								_ = AccessibilityPermissions.isTrusted(prompt: true)
+							}
+						} else {
+							Button("Open…") { PrivacySettings.openAccessibility() }
+								.foregroundStyle(.secondary)
 						}
 					}
+					HStack {
+						Image(systemName: "keyboard")
+							.foregroundStyle(.secondary)
+						Text("Input Monitoring: Required for Fn hotkey")
+							.font(.system(size: 13, weight: .semibold))
+						Spacer()
+						Button("Open…") { PrivacySettings.openInputMonitoring() }
+							.foregroundStyle(.secondary)
+					}
+
+					if let permissionStatusMessage {
+						Text(permissionStatusMessage)
+							.font(.system(size: 12))
+							.foregroundStyle(.secondary)
+					}
 				}
-				Text("Input Monitoring must be enabled in System Settings for the Fn hold-to-talk hotkey.")
-					.font(.system(size: 12))
-					.foregroundStyle(.secondary)
-			}
-			.padding(10)
-			.background(.regularMaterial)
+				.padding(10)
+				.background(.regularMaterial)
 			.clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
 			Text("Tip: If you run from Xcode, set OPENAI_API_KEY in the scheme env vars, or save it to Keychain here.")
