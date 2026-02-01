@@ -10,7 +10,7 @@ final class OpenAIWhisperTranscriber {
 		var errorDescription: String? {
 			switch self {
 			case .missingAPIKey:
-				return "Missing OPENAI_API_KEY in environment."
+				return "Missing OpenAI API key (set OPENAI_API_KEY or save to Keychain in Settings)."
 			case .invalidResponse:
 				return "Invalid response from transcription API."
 			case .serverError(let message):

@@ -35,6 +35,25 @@ private struct SettingsView: View {
 	@State private var apiKey: String = ""
 	@State private var status: String?
 
+	private var envKeyPresent: Bool {
+		let env = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? ""
+		return !env.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+	}
+
+	private var keychainKeyPresent: Bool {
+		APIKeyStore.shared.hasKeychainKey()
+	}
+
+	private var apiKeyConfigured: Bool {
+		envKeyPresent || keychainKeyPresent
+	}
+
+	private var apiKeySourceLabel: String {
+		if envKeyPresent { return "Environment variable (OPENAI_API_KEY)" }
+		if keychainKeyPresent { return "Keychain" }
+		return "Not configured"
+	}
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 10) {
 			Text("OpenWhisper")
@@ -48,6 +67,22 @@ private struct SettingsView: View {
 
 			Text("OpenAI API Key")
 				.font(.headline)
+
+			HStack(spacing: 10) {
+				Image(systemName: apiKeyConfigured ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
+					.foregroundStyle(apiKeyConfigured ? .green : .orange)
+				VStack(alignment: .leading, spacing: 2) {
+					Text(apiKeyConfigured ? "Configured" : "Not configured")
+						.font(.system(size: 13, weight: .semibold))
+					Text("Using: \(apiKeySourceLabel)")
+						.font(.system(size: 12))
+						.foregroundStyle(.secondary)
+				}
+				Spacer()
+			}
+			.padding(10)
+			.background(.regularMaterial)
+			.clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
 			SecureField("sk-…", text: $apiKey)
 

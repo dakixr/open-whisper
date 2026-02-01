@@ -18,6 +18,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 
 	private func startHold() {
+		recorder.onLevelUpdate = { [weak self] level in
+			Task { @MainActor in
+				self?.overlayController.update(level: level)
+			}
+		}
+
 		Task { @MainActor in
 			overlayController.show(state: .recording)
 		}
@@ -26,6 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 	private func stopHold() {
 		Task {
+			recorder.onLevelUpdate = nil
 			let result = await recorder.stop()
 			switch result {
 			case .failure(let error):

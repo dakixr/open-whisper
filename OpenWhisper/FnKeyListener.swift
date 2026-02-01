@@ -7,6 +7,9 @@ final class FnKeyListener {
 	private var globalMonitor: Any?
 	private var localMonitor: Any?
 	private var isPressed = false
+	private var didStartHold = false
+	private var pressWorkItem: DispatchWorkItem?
+	private let debounceSeconds: TimeInterval = 0.2
 
 	init(onPress: @escaping () -> Void, onRelease: @escaping () -> Void) {
 		self.onPress = onPress
@@ -46,9 +49,26 @@ final class FnKeyListener {
 		let pressedNow = event.modifierFlags.contains(.function)
 		if pressedNow && !isPressed {
 			isPressed = true
-			onPress()
+			didStartHold = false
+
+			let work = DispatchWorkItem { [weak self] in
+				guard let self, self.isPressed, !self.didStartHold else { return }
+				self.didStartHold = true
+				self.onPress()
+			}
+			pressWorkItem?.cancel()
+			pressWorkItem = work
+			DispatchQueue.main.asyncAfter(deadline: .now() + debounceSeconds, execute: work)
 		} else if !pressedNow && isPressed {
 			isPressed = false
+			pressWorkItem?.cancel()
+			pressWorkItem = nil
+
+			guard didStartHold else {
+				didStartHold = false
+				return
+			}
+			didStartHold = false
 			onRelease()
 		}
 	}

@@ -6,31 +6,33 @@
 	objectVersion = 60;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		001A0D2A2B6A000100000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D1F2B6A000100000001 /* AppDelegate.swift */; };
-		001A0D2B2B6A000100000001 /* FnKeyListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D202B6A000100000001 /* FnKeyListener.swift */; };
-		001A0D2C2B6A000100000001 /* HoldToTalkRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */; };
-		001A0D2D2B6A000100000001 /* OpenAIWhisperTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */; };
-		001A0D2E2B6A000100000001 /* TextInserter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D232B6A000100000001 /* TextInserter.swift */; };
-		001A0D2F2B6A000100000001 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D242B6A000100000001 /* OverlayController.swift */; };
-		001A0D302B6A000100000001 /* OpenWhisperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D252B6A000100000001 /* OpenWhisperApp.swift */; };
-		001A0D312B6A000100000001 /* SVGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D262B6A000100000001 /* SVGImage.swift */; };
-		001A0D322B6A000100000001 /* Resources/menu-icon.svg in Resources */ = {isa = PBXBuildFile; fileRef = 001A0D272B6A000100000001 /* Resources/menu-icon.svg */; };
-/* End PBXBuildFile section */
+	/* Begin PBXBuildFile section */
+			001A0D2A2B6A000100000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D1F2B6A000100000001 /* AppDelegate.swift */; };
+			001A0D2B2B6A000100000001 /* FnKeyListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D202B6A000100000001 /* FnKeyListener.swift */; };
+			001A0D2C2B6A000100000001 /* HoldToTalkRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */; };
+			001A0D2D2B6A000100000001 /* OpenAIWhisperTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */; };
+			001A0D2E2B6A000100000001 /* TextInserter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D232B6A000100000001 /* TextInserter.swift */; };
+			001A0D2F2B6A000100000001 /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D242B6A000100000001 /* OverlayController.swift */; };
+			001A0D302B6A000100000001 /* OpenWhisperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D252B6A000100000001 /* OpenWhisperApp.swift */; };
+			001A0D312B6A000100000001 /* SVGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D262B6A000100000001 /* SVGImage.swift */; };
+			001A0D322B6A000100000001 /* Resources/menu-icon.svg in Resources */ = {isa = PBXBuildFile; fileRef = 001A0D272B6A000100000001 /* Resources/menu-icon.svg */; };
+			001A0D332B6A000100000001 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D282B6A000100000001 /* WaveformView.swift */; };
+	/* End PBXBuildFile section */
 
-/* Begin PBXFileReference section */
-		001A0D102B6A000100000001 /* OpenWhisper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenWhisper.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		001A0D1E2B6A000100000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		001A0D1F2B6A000100000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		001A0D202B6A000100000001 /* FnKeyListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FnKeyListener.swift; sourceTree = "<group>"; };
-		001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoldToTalkRecorder.swift; sourceTree = "<group>"; };
-		001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIWhisperTranscriber.swift; sourceTree = "<group>"; };
-		001A0D232B6A000100000001 /* TextInserter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInserter.swift; sourceTree = "<group>"; };
-		001A0D242B6A000100000001 /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
-		001A0D252B6A000100000001 /* OpenWhisperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWhisperApp.swift; sourceTree = "<group>"; };
-		001A0D262B6A000100000001 /* SVGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVGImage.swift; sourceTree = "<group>"; };
-		001A0D272B6A000100000001 /* Resources/menu-icon.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Resources/menu-icon.svg"; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+	/* Begin PBXFileReference section */
+			001A0D102B6A000100000001 /* OpenWhisper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenWhisper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+			001A0D1E2B6A000100000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+			001A0D1F2B6A000100000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+			001A0D202B6A000100000001 /* FnKeyListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FnKeyListener.swift; sourceTree = "<group>"; };
+			001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoldToTalkRecorder.swift; sourceTree = "<group>"; };
+			001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIWhisperTranscriber.swift; sourceTree = "<group>"; };
+			001A0D232B6A000100000001 /* TextInserter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInserter.swift; sourceTree = "<group>"; };
+			001A0D242B6A000100000001 /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
+			001A0D252B6A000100000001 /* OpenWhisperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWhisperApp.swift; sourceTree = "<group>"; };
+			001A0D262B6A000100000001 /* SVGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVGImage.swift; sourceTree = "<group>"; };
+			001A0D272B6A000100000001 /* Resources/menu-icon.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Resources/menu-icon.svg"; sourceTree = "<group>"; };
+			001A0D282B6A000100000001 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+	/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		001A0D0D2B6A000100000001 /* Frameworks */ = {
@@ -59,23 +61,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		001A0D112B6A000100000001 /* OpenWhisper */ = {
-			isa = PBXGroup;
-			children = (
-				001A0D1F2B6A000100000001 /* AppDelegate.swift */,
-				001A0D252B6A000100000001 /* OpenWhisperApp.swift */,
-				001A0D202B6A000100000001 /* FnKeyListener.swift */,
-				001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */,
-				001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */,
-				001A0D232B6A000100000001 /* TextInserter.swift */,
-				001A0D242B6A000100000001 /* OverlayController.swift */,
-				001A0D262B6A000100000001 /* SVGImage.swift */,
-				001A0D272B6A000100000001 /* Resources/menu-icon.svg */,
-				001A0D1E2B6A000100000001 /* Info.plist */,
-			);
-			path = OpenWhisper;
-			sourceTree = "<group>";
-		};
+			001A0D112B6A000100000001 /* OpenWhisper */ = {
+				isa = PBXGroup;
+				children = (
+					001A0D1F2B6A000100000001 /* AppDelegate.swift */,
+					001A0D252B6A000100000001 /* OpenWhisperApp.swift */,
+					001A0D202B6A000100000001 /* FnKeyListener.swift */,
+					001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */,
+					001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */,
+					001A0D232B6A000100000001 /* TextInserter.swift */,
+					001A0D242B6A000100000001 /* OverlayController.swift */,
+					001A0D262B6A000100000001 /* SVGImage.swift */,
+					001A0D282B6A000100000001 /* WaveformView.swift */,
+					001A0D272B6A000100000001 /* Resources/menu-icon.svg */,
+					001A0D1E2B6A000100000001 /* Info.plist */,
+				);
+				path = OpenWhisper;
+				sourceTree = "<group>";
+			};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,23 +143,24 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXSourcesBuildPhase section */
-		001A0D0B2B6A000100000001 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				001A0D2A2B6A000100000001 /* AppDelegate.swift in Sources */,
-				001A0D302B6A000100000001 /* OpenWhisperApp.swift in Sources */,
-				001A0D2B2B6A000100000001 /* FnKeyListener.swift in Sources */,
-				001A0D2C2B6A000100000001 /* HoldToTalkRecorder.swift in Sources */,
-				001A0D2D2B6A000100000001 /* OpenAIWhisperTranscriber.swift in Sources */,
-				001A0D2E2B6A000100000001 /* TextInserter.swift in Sources */,
-				001A0D2F2B6A000100000001 /* OverlayController.swift in Sources */,
-				001A0D312B6A000100000001 /* SVGImage.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
+	/* Begin PBXSourcesBuildPhase section */
+			001A0D0B2B6A000100000001 /* Sources */ = {
+				isa = PBXSourcesBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+					001A0D2A2B6A000100000001 /* AppDelegate.swift in Sources */,
+					001A0D302B6A000100000001 /* OpenWhisperApp.swift in Sources */,
+					001A0D2B2B6A000100000001 /* FnKeyListener.swift in Sources */,
+					001A0D2C2B6A000100000001 /* HoldToTalkRecorder.swift in Sources */,
+					001A0D2D2B6A000100000001 /* OpenAIWhisperTranscriber.swift in Sources */,
+					001A0D2E2B6A000100000001 /* TextInserter.swift in Sources */,
+					001A0D2F2B6A000100000001 /* OverlayController.swift in Sources */,
+					001A0D312B6A000100000001 /* SVGImage.swift in Sources */,
+					001A0D332B6A000100000001 /* WaveformView.swift in Sources */,
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+			};
+	/* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		001A0D122B6A000100000001 /* Debug */ = {

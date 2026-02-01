@@ -13,41 +13,56 @@ final class OverlayController {
 	private var window: NSPanel?
 	private var textField: NSTextField?
 	private var iconView: NSImageView?
+	private var waveformView: WaveformView?
 	private var dismissTask: Task<Void, Never>?
+	private var currentState: State?
+
+	@MainActor
+	func update(level: Float) {
+		guard currentState == .recording else { return }
+		waveformView?.push(level: level)
+	}
 
 	@MainActor
 	func show(state: State) {
 		ensureWindow()
-		guard let window, let textField, let iconView else { return }
+		guard let window, let textField, let iconView, let waveformView else { return }
 
 		dismissTask?.cancel()
 		window.alphaValue = 1.0
+		currentState = state
 
 		switch state {
 		case .recording:
 			textField.stringValue = "Listening"
 			iconView.image = NSImage(systemSymbolName: "mic.fill", accessibilityDescription: "Listening")
 			tint(iconView, color: .systemRed)
+			waveformView.isHidden = false
+			waveformView.barColor = .systemRed
 			autoDismiss(after: nil)
 		case .transcribing:
 			textField.stringValue = "Transcribing"
 			iconView.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Transcribing")
 			tint(iconView, color: .systemBlue)
+			waveformView.isHidden = true
 			autoDismiss(after: nil)
 		case .done:
 			textField.stringValue = "Pasted"
 			iconView.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Done")
 			tint(iconView, color: .systemGreen)
+			waveformView.isHidden = true
 			autoDismiss(after: 0.8)
 		case .copiedOnly:
 			textField.stringValue = "Copied"
 			iconView.image = NSImage(systemSymbolName: "doc.on.clipboard.fill", accessibilityDescription: "Copied")
 			tint(iconView, color: .systemOrange)
+			waveformView.isHidden = true
 			autoDismiss(after: 1.2)
 		case .error(let message):
 			textField.stringValue = "Error"
 			iconView.image = NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: "Error")
 			tint(iconView, color: .secondaryLabelColor)
+			waveformView.isHidden = true
 			autoDismiss(after: 2.0)
 			NSLog("OpenWhisper error: \(message)")
 		}
@@ -89,17 +104,27 @@ final class OverlayController {
 		icon.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
 		icon.contentTintColor = .systemRed
 
-		let field = NSTextField(labelWithString: "Listening")
-		field.font = NSFont.systemFont(ofSize: 14, weight: .semibold)
-		field.textColor = .labelColor
-		field.lineBreakMode = .byTruncatingTail
-		field.translatesAutoresizingMaskIntoConstraints = false
+			let field = NSTextField(labelWithString: "Listening")
+			field.font = NSFont.systemFont(ofSize: 14, weight: .semibold)
+			field.textColor = .labelColor
+			field.lineBreakMode = .byTruncatingTail
+			field.translatesAutoresizingMaskIntoConstraints = false
 
-		let stack = NSStackView(views: [icon, field])
-		stack.orientation = .horizontal
-		stack.alignment = .centerY
-		stack.spacing = 8
-		stack.translatesAutoresizingMaskIntoConstraints = false
+			let waveform = WaveformView(frame: .zero)
+			waveform.translatesAutoresizingMaskIntoConstraints = false
+			waveform.barColor = .systemRed
+			waveform.isHidden = false
+
+			NSLayoutConstraint.activate([
+				waveform.widthAnchor.constraint(equalToConstant: 64),
+				waveform.heightAnchor.constraint(equalToConstant: 18),
+			])
+
+			let stack = NSStackView(views: [icon, waveform, field])
+			stack.orientation = .horizontal
+			stack.alignment = .centerY
+			stack.spacing = 8
+			stack.translatesAutoresizingMaskIntoConstraints = false
 
 		visual.addSubview(stack)
 
@@ -112,10 +137,11 @@ final class OverlayController {
 			stack.centerYAnchor.constraint(equalTo: visual.centerYAnchor),
 		])
 
-		window = panel
-		textField = field
-		iconView = icon
-	}
+			window = panel
+			textField = field
+			iconView = icon
+			waveformView = waveform
+		}
 
 	@MainActor
 	private func positionWindow(_ window: NSWindow) {

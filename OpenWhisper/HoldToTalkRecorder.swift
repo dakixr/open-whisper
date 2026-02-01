@@ -20,6 +20,9 @@ final class HoldToTalkRecorder {
 
 	private var recorder: AVAudioRecorder?
 	private var fileURL: URL?
+	private var meterTimer: DispatchSourceTimer?
+
+	var onLevelUpdate: ((Float) -> Void)?
 
 	func start() {
 		Task {
@@ -35,6 +38,7 @@ final class HoldToTalkRecorder {
 		guard let recorder else { return .failure(RecorderError.recorderStopFailed) }
 
 		let url = fileURL
+		stopMetering()
 		recorder.stop()
 		self.recorder = nil
 		self.fileURL = nil
@@ -55,7 +59,7 @@ final class HoldToTalkRecorder {
 		]
 
 		let recorder = try AVAudioRecorder(url: url, settings: settings)
-		recorder.isMeteringEnabled = false
+		recorder.isMeteringEnabled = true
 		recorder.prepareToRecord()
 
 		if !recorder.record() {
@@ -64,6 +68,33 @@ final class HoldToTalkRecorder {
 
 		self.recorder = recorder
 		self.fileURL = url
+		startMetering()
+	}
+
+	private func startMetering() {
+		stopMetering()
+		guard let recorder else { return }
+
+		let timer = DispatchSource.makeTimerSource(queue: .main)
+		timer.schedule(deadline: .now(), repeating: .milliseconds(50))
+		timer.setEventHandler { [weak self] in
+			guard let self else { return }
+			recorder.updateMeters()
+
+			// averagePower is in dBFS (roughly [-160, 0]).
+			let db = recorder.averagePower(forChannel: 0)
+			let clamped = max(-60.0, min(0.0, db))
+			let normalized = Float((clamped + 60.0) / 60.0) // 0...1
+
+			self.onLevelUpdate?(normalized)
+		}
+		timer.resume()
+		meterTimer = timer
+	}
+
+	private func stopMetering() {
+		meterTimer?.cancel()
+		meterTimer = nil
 	}
 
 	private func requestMicrophoneAccessIfNeeded() async -> Bool {
@@ -81,4 +112,3 @@ final class HoldToTalkRecorder {
 		}
 	}
 }
-
