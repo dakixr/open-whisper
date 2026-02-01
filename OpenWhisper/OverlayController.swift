@@ -78,6 +78,15 @@ final class OverlayController {
 	}
 
 	@MainActor
+	func hide() {
+		dismissTask?.cancel()
+		dismissTask = nil
+		currentState = nil
+		window?.alphaValue = 0.0
+		window?.orderOut(nil)
+	}
+
+	@MainActor
 	private func ensureWindow() {
 		if window != nil { return }
 
@@ -91,7 +100,7 @@ final class OverlayController {
 		panel.isFloatingPanel = true
 		panel.isOpaque = false
 		panel.hasShadow = true
-		panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
+		panel.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary, .ignoresCycle]
 		panel.backgroundColor = .clear
 		panel.ignoresMouseEvents = true
 
@@ -169,6 +178,9 @@ final class OverlayController {
 				ctx.duration = 0.18
 				ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 				self.window?.animator().alphaValue = 0.0
+			} completionHandler: { [weak self] in
+				guard let self else { return }
+				self.hide()
 			}
 		}
 	}
