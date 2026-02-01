@@ -54,7 +54,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 					self.overlayController.show(state: .transcribing)
 				}
 
-				let durationSeconds = AudioDuration.seconds(for: audioURL)
+				let durationSeconds = await AudioDuration.seconds(for: audioURL)
 				let textResult = await self.transcriber.transcribe(fileURL: audioURL)
 				switch textResult {
 				case .failure(let error):
