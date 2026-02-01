@@ -17,6 +17,8 @@
 			001A0D312B6A000100000001 /* SVGImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D262B6A000100000001 /* SVGImage.swift */; };
 			001A0D322B6A000100000001 /* Resources/menu-icon.svg in Resources */ = {isa = PBXBuildFile; fileRef = 001A0D272B6A000100000001 /* Resources/menu-icon.svg */; };
 			001A0D332B6A000100000001 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D282B6A000100000001 /* WaveformView.swift */; };
+			001A0D342B6A000100000001 /* Permissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D292B6A000100000001 /* Permissions.swift */; };
+			001A0D352B6A000100000001 /* CodeSigningInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2A2B6A000100000002 /* CodeSigningInfo.swift */; };
 	/* End PBXBuildFile section */
 
 	/* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 			001A0D262B6A000100000001 /* SVGImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVGImage.swift; sourceTree = "<group>"; };
 			001A0D272B6A000100000001 /* Resources/menu-icon.svg */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Resources/menu-icon.svg"; sourceTree = "<group>"; };
 			001A0D282B6A000100000001 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+			001A0D292B6A000100000001 /* Permissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permissions.swift; sourceTree = "<group>"; };
+			001A0D2A2B6A000100000002 /* CodeSigningInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeSigningInfo.swift; sourceTree = "<group>"; };
 	/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 					001A0D242B6A000100000001 /* OverlayController.swift */,
 					001A0D262B6A000100000001 /* SVGImage.swift */,
 					001A0D282B6A000100000001 /* WaveformView.swift */,
+					001A0D292B6A000100000001 /* Permissions.swift */,
+					001A0D2A2B6A000100000002 /* CodeSigningInfo.swift */,
 					001A0D272B6A000100000001 /* Resources/menu-icon.svg */,
 					001A0D1E2B6A000100000001 /* Info.plist */,
 				);
@@ -157,6 +163,8 @@
 					001A0D2F2B6A000100000001 /* OverlayController.swift in Sources */,
 					001A0D312B6A000100000001 /* SVGImage.swift in Sources */,
 					001A0D332B6A000100000001 /* WaveformView.swift in Sources */,
+					001A0D342B6A000100000001 /* Permissions.swift in Sources */,
+					001A0D352B6A000100000001 /* CodeSigningInfo.swift in Sources */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};

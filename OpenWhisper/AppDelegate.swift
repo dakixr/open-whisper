@@ -10,6 +10,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 	func applicationDidFinishLaunching(_ notification: Notification) {
 		NSApp.setActivationPolicy(.accessory)
 
+		// Prompt for Accessibility once (needed for Cmd+V). macOS will handle the one-time approval flow.
+		if !AccessibilityPermissions.isTrusted(prompt: false) {
+			let key = "didPromptAccessibility"
+			if !UserDefaults.standard.bool(forKey: key) {
+				_ = AccessibilityPermissions.isTrusted(prompt: true)
+				UserDefaults.standard.set(true, forKey: key)
+			}
+		}
+
 		fnListener = FnKeyListener(
 			onPress: { [weak self] in self?.startHold() },
 			onRelease: { [weak self] in self?.stopHold() }
@@ -39,24 +48,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 				await MainActor.run {
 					self.overlayController.show(state: .error(error.localizedDescription))
 				}
-			case .success(let audioURL):
-				await MainActor.run {
-					self.overlayController.show(state: .transcribing)
-				}
-				let textResult = await self.transcriber.transcribe(fileURL: audioURL)
-				switch textResult {
-				case .failure(let error):
+				case .success(let audioURL):
 					await MainActor.run {
-						self.overlayController.show(state: .error(error.localizedDescription))
+						self.overlayController.show(state: .transcribing)
 					}
-				case .success(let text):
-					_ = self.inserter.copyToClipboard(text)
-					let pasted = self.inserter.pasteFromClipboard()
-					await MainActor.run {
-						self.overlayController.show(state: pasted ? .done : .copiedOnly)
+					let textResult = await self.transcriber.transcribe(fileURL: audioURL)
+					switch textResult {
+					case .failure(let error):
+						await MainActor.run {
+							self.overlayController.show(state: .error(error.localizedDescription))
+						}
+					case .success(let text):
+						let insertResult = self.inserter.insertTextPreferDirect(text)
+						await MainActor.run {
+							switch insertResult {
+							case .typed:
+								self.overlayController.show(state: .done(.typed))
+							case .pasted:
+								self.overlayController.show(state: .done(.pasted))
+							case .copiedOnly:
+								self.overlayController.show(state: .copiedOnly)
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-}

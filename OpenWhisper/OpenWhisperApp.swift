@@ -48,6 +48,29 @@ private struct SettingsView: View {
 		envKeyPresent || keychainKeyPresent
 	}
 
+	private var accessibilityTrusted: Bool {
+		AccessibilityPermissions.isTrusted(prompt: false)
+	}
+
+	private var microphoneStatus: String {
+		switch MicrophonePermissions.status {
+		case .authorized:
+			return "Allowed"
+		case .denied:
+			return "Denied"
+		case .restricted:
+			return "Restricted"
+		case .notDetermined:
+			return "Not requested"
+		@unknown default:
+			return "Unknown"
+		}
+	}
+
+	private var signingInfo: CodeSigningInfo.Info {
+		CodeSigningInfo.current()
+	}
+
 	private var apiKeySourceLabel: String {
 		if envKeyPresent { return "Environment variable (OPENAI_API_KEY)" }
 		if keychainKeyPresent { return "Keychain" }
@@ -107,6 +130,62 @@ private struct SettingsView: View {
 			if let status {
 				Text(status).foregroundStyle(.secondary)
 			}
+
+			Divider().padding(.vertical, 6)
+
+			Text("Permissions")
+				.font(.headline)
+
+			VStack(alignment: .leading, spacing: 8) {
+				if signingInfo.isAdHoc {
+					HStack(alignment: .top, spacing: 10) {
+						Image(systemName: "exclamationmark.triangle.fill")
+							.foregroundStyle(.orange)
+						VStack(alignment: .leading, spacing: 2) {
+							Text("To avoid repeat permission prompts, sign with a Team")
+								.font(.system(size: 13, weight: .semibold))
+							Text("Xcode → Target → Signing & Capabilities → select your Team. Ad-hoc signing can cause macOS to ask again after rebuilds.")
+								.font(.system(size: 12))
+								.foregroundStyle(.secondary)
+						}
+					}
+					.padding(.bottom, 2)
+				} else if let team = signingInfo.teamIdentifier {
+					HStack(spacing: 10) {
+						Image(systemName: "checkmark.seal.fill")
+							.foregroundStyle(.green)
+						Text("Signed (Team \(team))")
+							.font(.system(size: 13, weight: .semibold))
+						Spacer()
+					}
+				}
+
+				HStack {
+					Image(systemName: microphoneStatus == "Allowed" ? "checkmark.circle.fill" : "mic.slash.fill")
+						.foregroundStyle(microphoneStatus == "Allowed" ? .green : .secondary)
+					Text("Microphone: \(microphoneStatus)")
+						.font(.system(size: 13, weight: .semibold))
+					Spacer()
+				}
+				HStack {
+					Image(systemName: accessibilityTrusted ? "checkmark.circle.fill" : "hand.raised.slash.fill")
+						.foregroundStyle(accessibilityTrusted ? .green : .secondary)
+					Text("Accessibility: \(accessibilityTrusted ? "Allowed" : "Not allowed")")
+						.font(.system(size: 13, weight: .semibold))
+					Spacer()
+					if !accessibilityTrusted {
+						Button("Request…") {
+							_ = AccessibilityPermissions.isTrusted(prompt: true)
+						}
+					}
+				}
+				Text("Input Monitoring must be enabled in System Settings for the Fn hold-to-talk hotkey.")
+					.font(.system(size: 12))
+					.foregroundStyle(.secondary)
+			}
+			.padding(10)
+			.background(.regularMaterial)
+			.clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
 			Text("Tip: If you run from Xcode, set OPENAI_API_KEY in the scheme env vars, or save it to Keychain here.")
 				.foregroundStyle(.secondary)

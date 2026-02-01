@@ -18,6 +18,12 @@ Requires macOS 14+ (MenuBarExtra + SettingsLink).
 
 Tip: after granting Input Monitoring / Accessibility, quit and relaunch OpenWhisper.
 
+## Avoid repeat permission prompts
+
+macOS ties privacy permissions to the app’s code signature. If you run with ad-hoc signing (common during development), rebuilding can trigger permission prompts again.
+
+To make permissions “stick”, set a signing Team in Xcode (Target → Signing & Capabilities) and keep the bundle identifier stable (`com.openwhisper.app`).
+
 ### Hold-to-talk
 
 - Hold the **Fn** key → overlay shows “Listening…”

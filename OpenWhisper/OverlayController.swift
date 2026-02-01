@@ -5,9 +5,14 @@ final class OverlayController {
 	enum State: Equatable {
 		case recording
 		case transcribing
-		case done
+		case done(DoneMode)
 		case copiedOnly
 		case error(String)
+	}
+
+	enum DoneMode: Equatable {
+		case typed
+		case pasted
 	}
 
 	private var window: NSPanel?
@@ -46,8 +51,8 @@ final class OverlayController {
 			tint(iconView, color: .systemBlue)
 			waveformView.isHidden = true
 			autoDismiss(after: nil)
-		case .done:
-			textField.stringValue = "Pasted"
+		case .done(let mode):
+			textField.stringValue = (mode == .typed) ? "Typed" : "Pasted"
 			iconView.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Done")
 			tint(iconView, color: .systemGreen)
 			waveformView.isHidden = true
@@ -116,26 +121,27 @@ final class OverlayController {
 			waveform.isHidden = false
 
 			NSLayoutConstraint.activate([
-				waveform.widthAnchor.constraint(equalToConstant: 64),
+				waveform.widthAnchor.constraint(equalToConstant: 96),
 				waveform.heightAnchor.constraint(equalToConstant: 18),
 			])
 
-			let stack = NSStackView(views: [icon, waveform, field])
+			let stack = NSStackView(views: [icon, field, waveform])
 			stack.orientation = .horizontal
 			stack.alignment = .centerY
 			stack.spacing = 8
 			stack.translatesAutoresizingMaskIntoConstraints = false
+			stack.distribution = .fill
 
-		visual.addSubview(stack)
+			visual.addSubview(stack)
 
-		NSLayoutConstraint.activate([
-			icon.widthAnchor.constraint(equalToConstant: 18),
-			icon.heightAnchor.constraint(equalToConstant: 18),
+			NSLayoutConstraint.activate([
+				icon.widthAnchor.constraint(equalToConstant: 18),
+				icon.heightAnchor.constraint(equalToConstant: 18),
 
-			stack.leadingAnchor.constraint(equalTo: visual.leadingAnchor, constant: 12),
-			stack.trailingAnchor.constraint(lessThanOrEqualTo: visual.trailingAnchor, constant: -12),
-			stack.centerYAnchor.constraint(equalTo: visual.centerYAnchor),
-		])
+				stack.leadingAnchor.constraint(equalTo: visual.leadingAnchor, constant: 12),
+				stack.trailingAnchor.constraint(equalTo: visual.trailingAnchor, constant: -12),
+				stack.centerYAnchor.constraint(equalTo: visual.centerYAnchor),
+			])
 
 			window = panel
 			textField = field
