@@ -3,20 +3,26 @@ import SwiftUI
 @main
 struct OpenWhisperApp: App {
 	@NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-	@State private var usage = UsageStore.shared
-	@State private var loginItem = LoginItemManager.shared
+	@StateObject private var usage = UsageStore.shared
+	@StateObject private var loginItem = LoginItemManager.shared
 
 	var body: some Scene {
 		MenuBarExtra {
-			Toggle("Launch at Login", isOn: $loginItem.isEnabled)
+			Toggle(
+				"Launch at Login",
+				isOn: Binding(
+					get: { loginItem.isEnabled },
+					set: { loginItem.setEnabled($0) }
+				)
+			)
 			Divider()
 			SettingsLink()
 			Divider()
 
 			let today = usage.totalsToday
 			let all = usage.totalsAllTime
-			Text("Today: \(UsageFormat.minutesString(seconds: today.seconds)) • \(UsageFormat.currencyUSD(usage.estimatedCostUSD(for: today)))")
-			Text("All time: \(UsageFormat.minutesString(seconds: all.seconds)) • \(UsageFormat.currencyUSD(usage.estimatedCostUSD(for: all)))")
+			Text("Today: \(UsageFormat.minutesString(seconds: today.seconds)) • \(UsageFormat.currencyUSD(usage.estimatedCostUSD(for: today), maxFractionDigits: 4))")
+			Text("All time: \(UsageFormat.minutesString(seconds: all.seconds)) • \(UsageFormat.currencyUSD(usage.estimatedCostUSD(for: all), maxFractionDigits: 4))")
 			Text("Rate: \(UsageFormat.currencyUSD(UsagePricing.whisperUSDPerMinute, maxFractionDigits: 3))/min (estimated)")
 				.foregroundStyle(.secondary)
 
@@ -50,7 +56,7 @@ private struct MenuBarIcon: View {
 private struct SettingsView: View {
 	@State private var apiKey: String = ""
 	@State private var status: String?
-	@State private var loginItem = LoginItemManager.shared
+	@ObservedObject private var loginItem = LoginItemManager.shared
 	@State private var permissionStatusMessage: String?
 
 	private var envKeyPresent: Bool {
@@ -104,7 +110,13 @@ private struct SettingsView: View {
 			Text("Requires permissions: Microphone, Input Monitoring, Accessibility.")
 				.foregroundStyle(.secondary)
 
-			Toggle("Launch at Login", isOn: $loginItem.isEnabled)
+			Toggle(
+				"Launch at Login",
+				isOn: Binding(
+					get: { loginItem.isEnabled },
+					set: { loginItem.setEnabled($0) }
+				)
+			)
 				.toggleStyle(.switch)
 
 			Divider().padding(.vertical, 6)

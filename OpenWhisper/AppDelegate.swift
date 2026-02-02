@@ -65,13 +65,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 				switch textResult {
 				case .failure(let error):
 					if !isMissingKey(error) {
-						UsageStore.shared.recordTranscription(durationSeconds: durationSeconds, succeeded: false)
+						await MainActor.run {
+							UsageStore.shared.recordTranscription(durationSeconds: durationSeconds, succeeded: false)
+						}
 					}
 					await MainActor.run {
 						self.overlayController.show(state: .error(error.localizedDescription))
 					}
 				case .success(let text):
-					UsageStore.shared.recordTranscription(durationSeconds: durationSeconds, succeeded: true)
+					await MainActor.run {
+						UsageStore.shared.recordTranscription(durationSeconds: durationSeconds, succeeded: true)
+					}
 					let insertResult = self.inserter.insertTextPreferDirect(text)
 					await MainActor.run {
 						switch insertResult {

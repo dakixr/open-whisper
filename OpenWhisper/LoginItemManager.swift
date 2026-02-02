@@ -1,26 +1,42 @@
 import Foundation
-import Observation
+import Combine
 import ServiceManagement
 
-@Observable
-final class LoginItemManager {
+@MainActor
+final class LoginItemManager: ObservableObject {
 	static let shared = LoginItemManager()
 
-	private init() {}
+	@Published private(set) var isEnabled: Bool
 
-	var isEnabled: Bool {
-		get { SMAppService.mainApp.status == .enabled }
-		set {
-			do {
-				if newValue {
-					try SMAppService.mainApp.register()
-				} else {
-					try SMAppService.mainApp.unregister()
-				}
-			} catch {
-				NSLog("OpenWhisper: failed to update login item: \(error.localizedDescription)")
-			}
+	private init() {
+		isEnabled = SMAppService.mainApp.status == .enabled
+	}
+
+	private var isSyncing = false
+
+	private func syncFromSystemStatus() {
+		isSyncing = true
+		isEnabled = SMAppService.mainApp.status == .enabled
+		isSyncing = false
+	}
+
+	func setEnabled(_ enabled: Bool) {
+		guard !isSyncing else { return }
+		guard (SMAppService.mainApp.status == .enabled) != enabled else {
+			syncFromSystemStatus()
+			return
 		}
+
+		do {
+			if enabled {
+				try SMAppService.mainApp.register()
+			} else {
+				try SMAppService.mainApp.unregister()
+			}
+		} catch {
+			NSLog("OpenWhisper: failed to update login item: \(error.localizedDescription)")
+		}
+
+		syncFromSystemStatus()
 	}
 }
-

@@ -1,5 +1,5 @@
 import Foundation
-import Observation
+import Combine
 
 struct UsagePricing {
 	// Whisper API pricing is per minute of audio.
@@ -15,14 +15,14 @@ struct UsageTotals: Codable, Equatable {
 	static let zero = UsageTotals(seconds: 0, requests: 0, successes: 0)
 }
 
-@Observable
-final class UsageStore {
+@MainActor
+final class UsageStore: ObservableObject {
 	static let shared = UsageStore()
 
 	private let storageKey = "openwhisper.usage.v1"
 	private let calendar = Calendar.current
 
-	var byDay: [String: UsageTotals] = [:]
+	@Published private(set) var byDay: [String: UsageTotals] = [:]
 
 	private init() {
 		load()
@@ -88,4 +88,3 @@ final class UsageStore {
 		return String(format: "%04d-%02d-%02d", y, m, d)
 	}
 }
-
