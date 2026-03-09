@@ -1,6 +1,7 @@
 import AppKit
 
 final class FnKeyListener {
+	private let fnKeyCode = CGKeyCode(63)
 	private let onPress: () -> Void
 	private let onRelease: () -> Void
 
@@ -9,7 +10,9 @@ final class FnKeyListener {
 	private var isPressed = false
 	private var didStartHold = false
 	private var pressWorkItem: DispatchWorkItem?
+	private var releasePollTimer: DispatchSourceTimer?
 	private let debounceSeconds: TimeInterval = 0.2
+	private let releasePollInterval: DispatchTimeInterval = .milliseconds(50)
 
 	init(onPress: @escaping () -> Void, onRelease: @escaping () -> Void) {
 		self.onPress = onPress
@@ -32,6 +35,12 @@ final class FnKeyListener {
 	}
 
 	func stop() {
+		pressWorkItem?.cancel()
+		pressWorkItem = nil
+		stopReleasePolling()
+		isPressed = false
+		didStartHold = false
+
 		if let globalMonitor {
 			NSEvent.removeMonitor(globalMonitor)
 		}
@@ -44,7 +53,7 @@ final class FnKeyListener {
 
 	private func handle(event: NSEvent) {
 		// Fn key is keyCode 63 on Apple keyboards.
-		guard event.type == .flagsChanged, event.keyCode == 63 else { return }
+		guard event.type == .flagsChanged, event.keyCode == fnKeyCode else { return }
 
 		let pressedNow = event.modifierFlags.contains(.function)
 		if pressedNow && !isPressed {
@@ -54,22 +63,53 @@ final class FnKeyListener {
 			let work = DispatchWorkItem { [weak self] in
 				guard let self, self.isPressed, !self.didStartHold else { return }
 				self.didStartHold = true
+				self.startReleasePolling()
 				self.onPress()
 			}
 			pressWorkItem?.cancel()
 			pressWorkItem = work
 			DispatchQueue.main.asyncAfter(deadline: .now() + debounceSeconds, execute: work)
 		} else if !pressedNow && isPressed {
-			isPressed = false
-			pressWorkItem?.cancel()
-			pressWorkItem = nil
-
-			guard didStartHold else {
-				didStartHold = false
-				return
-			}
-			didStartHold = false
-			onRelease()
+			finishPressIfNeeded()
 		}
+	}
+
+	private func startReleasePolling() {
+		stopReleasePolling()
+
+		let timer = DispatchSource.makeTimerSource(queue: .main)
+		timer.schedule(deadline: .now() + releasePollInterval, repeating: releasePollInterval)
+		timer.setEventHandler { [weak self] in
+			guard let self else { return }
+
+			let pressedNow = CGEventSource.keyState(.combinedSessionState, key: self.fnKeyCode)
+			if !pressedNow {
+				self.finishPressIfNeeded()
+			}
+		}
+		timer.resume()
+		releasePollTimer = timer
+	}
+
+	private func stopReleasePolling() {
+		releasePollTimer?.cancel()
+		releasePollTimer = nil
+	}
+
+	private func finishPressIfNeeded() {
+		guard isPressed else { return }
+
+		isPressed = false
+		pressWorkItem?.cancel()
+		pressWorkItem = nil
+		stopReleasePolling()
+
+		guard didStartHold else {
+			didStartHold = false
+			return
+		}
+
+		didStartHold = false
+		onRelease()
 	}
 }

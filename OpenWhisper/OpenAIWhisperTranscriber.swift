@@ -6,6 +6,7 @@ final class OpenAIWhisperTranscriber {
 		case missingAPIKey
 		case invalidResponse
 		case serverError(String)
+		case timedOut
 
 		var errorDescription: String? {
 			switch self {
@@ -15,12 +16,23 @@ final class OpenAIWhisperTranscriber {
 				return "Invalid response from transcription API."
 			case .serverError(let message):
 				return message
+			case .timedOut:
+				return "Transcription timed out. Try again."
 			}
 		}
 	}
 
 	private struct TranscriptionResponse: Decodable {
 		let text: String
+	}
+
+	private let session: URLSession
+
+	init() {
+		let configuration = URLSessionConfiguration.default
+		configuration.timeoutIntervalForRequest = 60
+		configuration.timeoutIntervalForResource = 90
+		self.session = URLSession(configuration: configuration)
 	}
 
 	func transcribe(fileURL: URL) async -> Result<String, Error> {
@@ -31,6 +43,7 @@ final class OpenAIWhisperTranscriber {
 		var request = URLRequest(url: URL(string: "https://api.openai.com/v1/audio/transcriptions")!)
 		request.httpMethod = "POST"
 		request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+		request.timeoutInterval = 60
 
 		let boundary = "Boundary-\(UUID().uuidString)"
 		request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -50,7 +63,7 @@ final class OpenAIWhisperTranscriber {
 		}
 
 		do {
-			let (data, response) = try await URLSession.shared.data(for: request)
+			let (data, response) = try await session.data(for: request)
 			guard let http = response as? HTTPURLResponse else { return .failure(TranscribeError.invalidResponse) }
 
 			if !(200...299).contains(http.statusCode) {
@@ -61,6 +74,9 @@ final class OpenAIWhisperTranscriber {
 			let decoded = try JSONDecoder().decode(TranscriptionResponse.self, from: data)
 			return .success(decoded.text.trimmingCharacters(in: .whitespacesAndNewlines))
 		} catch {
+			if let urlError = error as? URLError, urlError.code == .timedOut {
+				return .failure(TranscribeError.timedOut)
+			}
 			return .failure(error)
 		}
 	}
