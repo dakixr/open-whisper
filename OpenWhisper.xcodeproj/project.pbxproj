@@ -23,6 +23,7 @@
 			001A0D372B6A000100000001 /* UsageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2C2B6A000100000002 /* UsageFormat.swift */; };
 			001A0D382B6A000100000001 /* AudioDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2D2B6A000100000002 /* AudioDuration.swift */; };
 			001A0D392B6A000100000001 /* LoginItemManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A0D2E2B6A000100000002 /* LoginItemManager.swift */; };
+			00F100012B6A000100000001 /* FnKeyPressStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F100002B6A000100000001 /* FnKeyPressStateMachine.swift */; };
 	/* End PBXBuildFile section */
 
 	/* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 			001A0D2C2B6A000100000002 /* UsageFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageFormat.swift; sourceTree = "<group>"; };
 			001A0D2D2B6A000100000002 /* AudioDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDuration.swift; sourceTree = "<group>"; };
 			001A0D2E2B6A000100000002 /* LoginItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginItemManager.swift; sourceTree = "<group>"; };
+			00F100002B6A000100000001 /* FnKeyPressStateMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FnKeyPressStateMachine.swift; sourceTree = "<group>"; };
 	/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 					001A0D1F2B6A000100000001 /* AppDelegate.swift */,
 					001A0D252B6A000100000001 /* OpenWhisperApp.swift */,
 					001A0D202B6A000100000001 /* FnKeyListener.swift */,
+					00F100002B6A000100000001 /* FnKeyPressStateMachine.swift */,
 					001A0D212B6A000100000001 /* HoldToTalkRecorder.swift */,
 					001A0D222B6A000100000001 /* OpenAIWhisperTranscriber.swift */,
 					001A0D232B6A000100000001 /* TextInserter.swift */,
@@ -169,6 +172,7 @@
 					001A0D2A2B6A000100000001 /* AppDelegate.swift in Sources */,
 					001A0D302B6A000100000001 /* OpenWhisperApp.swift in Sources */,
 					001A0D2B2B6A000100000001 /* FnKeyListener.swift in Sources */,
+					00F100012B6A000100000001 /* FnKeyPressStateMachine.swift in Sources */,
 					001A0D2C2B6A000100000001 /* HoldToTalkRecorder.swift in Sources */,
 					001A0D2D2B6A000100000001 /* OpenAIWhisperTranscriber.swift in Sources */,
 					001A0D2E2B6A000100000001 /* TextInserter.swift in Sources */,

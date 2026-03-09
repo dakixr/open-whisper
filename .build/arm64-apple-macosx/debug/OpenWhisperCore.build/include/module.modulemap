@@ -1,0 +1,3 @@
+module OpenWhisperCore {
+    header "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/include/OpenWhisperCore-Swift.h"
+}
