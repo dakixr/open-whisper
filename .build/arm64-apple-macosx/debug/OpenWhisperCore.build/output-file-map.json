@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/master.swiftdeps"
+  },
+  "/Users/dakixr/dev/open-whisper/OpenWhisper/FnKeyPressStateMachine.swift": {
+    "dependencies": "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/FnKeyPressStateMachine.d",
+    "object": "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/FnKeyPressStateMachine.swift.o",
+    "swiftmodule": "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/FnKeyPressStateMachine~partial.swiftmodule",
+    "swift-dependencies": "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/FnKeyPressStateMachine.swiftdeps",
+    "diagnostics": "/Users/dakixr/dev/open-whisper/.build/arm64-apple-macosx/debug/OpenWhisperCore.build/FnKeyPressStateMachine.dia"
+  }
+}
