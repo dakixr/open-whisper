@@ -10,6 +10,7 @@ DerivedData/
 *.xcodeproj/project.xcworkspace/xcuserdata/
 
 # Build outputs
+.build/
 build/
 dist/
 
@@ -17,4 +18,3 @@ dist/
 *.swp
 *.tmp
 *.log
-
