@@ -42,6 +42,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 		fnListener?.start()
 	}
 
+	func applicationDidBecomeActive(_ notification: Notification) {
+		// macOS permission changes can happen while the app is backgrounded in System Settings.
+		// Rebinding the listener on activation picks up newly granted Input Monitoring access.
+		fnListener?.start()
+	}
+
 	@MainActor
 	private func startHold() {
 		guard sessionState == .idle else { return }

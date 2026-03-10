@@ -1,4 +1,5 @@
 import SwiftUI
+import AVFoundation
 
 @main
 struct OpenWhisperApp: App {
@@ -54,10 +55,25 @@ private struct MenuBarIcon: View {
 }
 
 private struct SettingsView: View {
+	private struct PermissionSnapshot {
+		let microphoneStatus: AVAuthorizationStatus
+		let accessibilityTrusted: Bool
+		let inputMonitoringGranted: Bool
+
+		static func current() -> PermissionSnapshot {
+			PermissionSnapshot(
+				microphoneStatus: MicrophonePermissions.status,
+				accessibilityTrusted: AccessibilityPermissions.isTrusted(prompt: false),
+				inputMonitoringGranted: InputMonitoringPermissions.isGranted
+			)
+		}
+	}
+
 	@State private var apiKey: String = ""
 	@State private var status: String?
 	@ObservedObject private var loginItem = LoginItemManager.shared
 	@State private var permissionStatusMessage: String?
+	@State private var permissions = PermissionSnapshot.current()
 
 	private var envKeyPresent: Bool {
 		let env = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? ""
@@ -72,12 +88,8 @@ private struct SettingsView: View {
 		envKeyPresent || keychainKeyPresent
 	}
 
-	private var accessibilityTrusted: Bool {
-		AccessibilityPermissions.isTrusted(prompt: false)
-	}
-
 	private var microphoneStatus: String {
-		switch MicrophonePermissions.status {
+		switch permissions.microphoneStatus {
 		case .authorized:
 			return "Allowed"
 		case .denied:
@@ -89,6 +101,10 @@ private struct SettingsView: View {
 		@unknown default:
 			return "Unknown"
 		}
+	}
+
+	private var inputMonitoringStatus: String {
+		permissions.inputMonitoringGranted ? "Allowed" : "Not allowed"
 	}
 
 	private var signingInfo: CodeSigningInfo.Info {
@@ -202,13 +218,17 @@ private struct SettingsView: View {
 						if microphoneStatus != "Allowed" {
 							Button(microphoneStatus == "Not requested" ? "Request…" : "Open…") {
 								Task {
-									if MicrophonePermissions.status == .notDetermined {
+									if permissions.microphoneStatus == .notDetermined {
 										let granted = await MicrophonePermissions.requestIfNeeded()
 										await MainActor.run {
 											permissionStatusMessage = granted ? "Microphone permission granted." : "Microphone permission denied."
+											refreshPermissions()
 										}
 									} else {
 										PrivacySettings.openMicrophone()
+										await MainActor.run {
+											permissionStatusMessage = "Opened System Settings for Microphone."
+										}
 									}
 								}
 							}
@@ -218,14 +238,16 @@ private struct SettingsView: View {
 						}
 					}
 					HStack {
-						Image(systemName: accessibilityTrusted ? "checkmark.circle.fill" : "hand.raised.slash.fill")
-							.foregroundStyle(accessibilityTrusted ? .green : .secondary)
-					Text("Accessibility: \(accessibilityTrusted ? "Allowed" : "Not allowed")")
+						Image(systemName: permissions.accessibilityTrusted ? "checkmark.circle.fill" : "hand.raised.slash.fill")
+							.foregroundStyle(permissions.accessibilityTrusted ? .green : .secondary)
+					Text("Accessibility: \(permissions.accessibilityTrusted ? "Allowed" : "Not allowed")")
 						.font(.system(size: 13, weight: .semibold))
 					Spacer()
-						if !accessibilityTrusted {
+						if !permissions.accessibilityTrusted {
 							Button("Request…") {
 								_ = AccessibilityPermissions.isTrusted(prompt: true)
+								permissionStatusMessage = "Accessibility request opened in System Settings."
+								refreshPermissions()
 							}
 						} else {
 							Button("Open…") { PrivacySettings.openAccessibility() }
@@ -233,17 +255,32 @@ private struct SettingsView: View {
 						}
 					}
 					HStack {
-						Image(systemName: "keyboard")
-							.foregroundStyle(.secondary)
-						Text("Input Monitoring: Required for Fn hotkey")
+						Image(systemName: permissions.inputMonitoringGranted ? "checkmark.circle.fill" : "keyboard")
+							.foregroundStyle(permissions.inputMonitoringGranted ? .green : .secondary)
+						Text("Input Monitoring: \(inputMonitoringStatus)")
 							.font(.system(size: 13, weight: .semibold))
 						Spacer()
-						Button("Open…") { PrivacySettings.openInputMonitoring() }
-							.foregroundStyle(.secondary)
+						if permissions.inputMonitoringGranted {
+							Button("Open…") { PrivacySettings.openInputMonitoring() }
+								.foregroundStyle(.secondary)
+						} else {
+							Button("Request…") {
+								let granted = InputMonitoringPermissions.requestIfNeeded()
+								permissionStatusMessage = granted ? "Input Monitoring permission granted." : "Input Monitoring request opened in System Settings."
+								refreshPermissions()
+							}
+							Button("Open…") { PrivacySettings.openInputMonitoring() }
+								.foregroundStyle(.secondary)
+						}
 					}
 
 					if let permissionStatusMessage {
 						Text(permissionStatusMessage)
+							.font(.system(size: 12))
+							.foregroundStyle(.secondary)
+					}
+					if permissions.accessibilityTrusted || permissions.inputMonitoringGranted {
+						Text("If you just changed Accessibility or Input Monitoring, switch back to OpenWhisper. It refreshes permission state when the app becomes active.")
 							.font(.system(size: 12))
 							.foregroundStyle(.secondary)
 					}
@@ -257,5 +294,15 @@ private struct SettingsView: View {
 		}
 		.padding(16)
 		.frame(width: 420)
+		.onAppear {
+			refreshPermissions()
+		}
+		.onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+			refreshPermissions()
+		}
+	}
+
+	private func refreshPermissions() {
+		permissions = PermissionSnapshot.current()
 	}
 }

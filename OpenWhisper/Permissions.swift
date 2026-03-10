@@ -1,6 +1,7 @@
 import ApplicationServices
 import AppKit
 import AVFoundation
+import CoreGraphics
 
 enum AccessibilityPermissions {
 	static func isTrusted(prompt: Bool) -> Bool {
@@ -28,6 +29,18 @@ enum MicrophonePermissions {
 		default:
 			return false
 		}
+	}
+}
+
+enum InputMonitoringPermissions {
+	static var isGranted: Bool {
+		CGPreflightListenEventAccess()
+	}
+
+	@discardableResult
+	static func requestIfNeeded() -> Bool {
+		guard !isGranted else { return true }
+		return CGRequestListenEventAccess()
 	}
 }
 
